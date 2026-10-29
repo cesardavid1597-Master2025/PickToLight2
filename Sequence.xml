@@ -1,0 +1,324 @@
+<!-- *********************************************************************** -->
+<!-- File Name:     PRAQ Packaging Sequence                                  -->
+<!-- Date Modified: 04-07-2025                                               -->
+<!-- Modified by:   Colleen Mulvihill                                             -->
+<!-- Changes:       CD2E install rev up prev Rev 0n 255,256,246,247,252,254,245,Installs-->
+<!-- *********************************************************************** -->
+
+<xml>
+<!-- *********************************************************************** -->
+<!--                             PROGRAM STARTUP:                            -->
+<!-- *********************************************************************** -->
+	<powerup>
+		<step name="nop"/>
+	</powerup>
+
+
+<!-- *********************************************************************** -->
+<!--                             PART SCANNED:                               -->
+<!-- *********************************************************************** -->
+	<scan>
+	    <!--Run these steps at the end, regardless of pass or fail-->
+		<persist>
+			<step name="display_image"/>
+		</persist>
+		<!--Run these steps before model is determined. Ideally, use these steps to determine model-->
+		<init>
+			<step name="setvar" variable="modelnumber" value="PRODUCT"/>
+		</init>
+		<!--Main steps. Put all lights, scan checks, label prints, etc here-->
+		<sequence model="PRODUCT"> <!--^[CH]D2|^S[CH]D2 -->
+			<persist>
+				<step name="nop"/>
+			</persist>
+		    <section>
+				<step name="message_box_one_button" largetext="Changeover occurred" smalltext="Primer paso terminado" />
+				<step name="scan_check_constant" description="Install GEX55242-02" expected="GEX55242-02" scannertype="keyence" port="SCAN1_RS232" baud="19200" parity="even" bank="04"/>
+
+			</section>
+		</sequence>
+		<sequence model="^[CH][DO]2|^S[CH][DO]2|PM[DO]P"> <!--^[CH]D2|^S[CH]D2 -->
+			<persist>
+				<step name="nop"/>
+			</persist>
+		    <section>
+				<step name="odin_stage_check_in" description="Checking in to this stage" thisstage="Packaging" skipvar="overpack"/>
+				<step name="renamevar" variable="serialnumber" newvariable="eqserialnumber"/>
+
+				<!--Changeover: Rack R-0.1-->
+				<step name="message_box_one_button" skipvar="!changeover" largetext="Changeover occurred" smalltext="Follow the lights to change parts from the rack" playsound="true"/>
+				<step name="banner_set_light" skipvar="!changeover" model="^S.D|SPMDP" description="Get GEX37429-01 from rack" light="30,32,34"/>
+				<step name="banner_set_light" skipvar="!changeover" model="^[CH]D|^PMDP" description="Get GEX37432-01 from rack" light="36,38"/>
+				<step name="banner_set_light" skipvar="!changeover" model="^S.O|SPMOP" description="Get GEX37433-01 from rack" light="40"/>
+				<step name="banner_set_light" skipvar="!changeover" model="^HO|^PMOP" description="Get GEX37434-01 from rack" light="41"/>
+				
+				<step name="banner_set_light" skipvar="!changeover" model="^[CH]D|PMDP|^S[CH]D" description="Get GEX40306-01 from rack" light="35,37"/>
+				<step name="banner_set_light" skipvar="!changeover" model="HO|PMOP" description="Get GEX40308-01 from rack" light="39"/>
+
+				<!--Changeover: Rack R-0.2-->
+				<step name="banner_set_light" skipvar="!changeover" model="^CD2L[AP]|^HD2LP" description="Get JYT63946-02 from rack" light="11"/>
+				<step name="banner_set_light" skipvar="!changeover" model="^CD2[XE]|^H[OD]2X|^P" description="Get JYT63947-02 from rack" light="12"/>
+				<step name="banner_set_light" skipvar="!changeover" model="^^S.D2L" description="Get JYT63948-02 from rack" light="13"/>
+				<step name="banner_set_light" skipvar="!changeover" model="^SCD2X|SHD2X|SHO|SPM" description="Get JYT63949 from rack" light="14"/>
+				
+				<step name="banner_set_light" skipvar="!changeover" model="SPMDP" description="Get GEX55246-02 from rack" light="16"/>
+				<step name="banner_set_light" skipvar="!changeover" model="SPMOP" description="Get GEX55247-02 from rack" light="17"/>
+				<step name="banner_set_light" skipvar="!changeover" model="^CD2.A" description="Get GEX55248-01 from rack" light="18"/>
+				<step name="banner_set_light" skipvar="!changeover" model="^CD2.P" description="Get GEX55250-02 from rack" light="19"/>
+				<step name="banner_set_light" skipvar="!changeover" model="^HD2.A" description="Get GEX55252-02 from rack" light="20"/>
+				<step name="banner_set_light" skipvar="!changeover" model="^HD2.P" description="Get GEX55253-02 from rack" light="21"/>
+				<step name="banner_set_light" skipvar="!changeover" model="^HO" description="Get GEX55254-02 from rack" light="22"/>
+				<step name="banner_set_light" skipvar="!changeover" model="^PMDP" description="Get GEX55255-02 from rack" light="23"/>
+				<step name="banner_set_light" skipvar="!changeover" model="^PMOP" description="Get GEX55256-02 from rack" light="24"/>
+				<step name="banner_set_light" skipvar="!changeover" model="SCD2.A" description="Get GEX55238-01 from rack" light="25"/>
+				<step name="banner_set_light" skipvar="!changeover" model="SCD2.P" description="Get GEX55240-02 from rack" light="29"/>
+				<step name="banner_set_light" skipvar="!changeover" model="SHD..A" description="Get GEX55242-02 from rack" light="28"/>
+				<step name="banner_set_light" skipvar="!changeover" model="SHD2.P" description="Get GEX55243-02 from rack" light="27"/>
+				<step name="banner_set_light" skipvar="!changeover" model="SHO" description="Get GEX55245-02 from rack" light="26"/>
+				<step name="banner_set_light" skipvar="!changeover" model="CD2E" description="Get PKR59964-01 from rack" light="15"/>
+
+				
+				<!--Labels-->
+				<step name="lsa_pra_get_firmware" description="Getting product firmware version from database..."/>
+				<step name="print_thermo_label" description="Printing product label..." line="1" labeltype="1" reprintname="Product Label"/>	
+				<step name="banner_set_light" description="Get Overlay Label   GEX37908-01" light="4"/>	
+				<step name="eQuality_write_info" eQualityRegister="1004" partnumber="1"/>
+
+				<step name="banner_set_light" description="Get front label" light="2"/>
+				<step name="eQuality_write_info" eQualityRegister="1002" partnumber="1"/>
+
+				<step name="banner_set_light" description="Roll front label" light="1"/>
+				<step name="eQuality_write_info" eQualityRegister="1001" partnumber="1"/>
+				
+				<step name="banner_set_light" model="^HD|^SHD" description="Get bracket gasket   JYT40697" light="10"/>
+				<step name="eQuality_write_info" model="^HD|^SHD" eQualityRegister="1010" partnumber="1"/>
+				<step name="banner_set_light" model="^HD|^SHD" description="Get bracket   JYT51594" light="51"/>
+				<step name="eQuality_write_info" model="^HD|^SHD" eQualityRegister="1051" partnumber="1"/>
+				
+				<!--vision system-->
+				<step name="message_box_one_button_image" description = "Place DUT into Vision System Fixture" imagepath="\\veris-fs01\Production Line Data\PRAQ\PRAQ Packaging\FrontViewofGenericDUT.jpg" largetext="PLEASE PLACE UNIT INTO VISION SYSTEM FIXTURE"/>
+				
+				<step name="Vision_Test_New" model="S[HCP][DOM][2DO][XP].*" description="Inspecting for SE NON LCD Label" address="192.168.10.2" parttocheck="SE NO-LCD-Top Label,Product Label,Overlay Label" program="2,5,6" autostart="True"/>
+				<step name="Vision_Test_New" model="S[HC]D2L.*" description="Inspecting for SE LCD Label" address="192.168.10.2" parttocheck="SE-LCD-Top Label,Product Label,Overlay Label" program="3,5,6" autostart="True"/> 
+				<step name="Vision_Test_New" model="^[HC][OD]2[XE].*|^PM[OD]P?.*" description="Inspecting for VERIS NON LCD Label" address="192.168.10.2" parttocheck="VERIS-NO-LCD-Top Label,Product Label,Overlay Label" program="4,5,6" autostart="True"/> 
+				<step name="Vision_Test_New" model="^[HC]D2L[P]?.*" description="Inspecting for VERIS LCD Label" address="192.168.10.2" parttocheck="VERIS-LCD-Top Label,Product Label,Overlay Label" program="1,5,6" autostart="True"/> 
+				
+				<step name="message_box_one_button_image" model = "[S]?[CHP]D2[LEX][P]?.*|[S]?PMDP.*" imagepath="\\veris-fs01\Production Line Data\PRAQ\PRAQ Packaging\PRAQ_Foam_Gasket_with_JYT46699-05.jpg" largetext="Please flip unit, as shown in the picture"/>
+				
+				<step name="Vision_Test_New" model="[S]?HD2[LX][AP]?.*" description="Inspecting for Gasket on Bracket " address="192.168.10.2" parttocheck="Bracket Gasket" program="0" autostart="True"/>
+				<step name="Vision_Test_New" model="[S]?HD2[LX][AP]?.*" description="Inspecting for SMALLER Probe Tip, Labels, and Gasket" address="192.168.10.2" parttocheck="Bottom Gasket, Small Probe" program="8,11" autostart="True"/>
+				<step name="Vision_Test_New" model="[S]?CD2[XLE].*" description="Inspecting for BIGGER Probe Tip, Labels, and Gasket" address="192.168.10.2" parttocheck="Bottom Gasket, BIG Probe" program="8,10" autostart="True"/>
+				<step name="Vision_Test_New" model="[S]?PMDP.*" description="Inspecting for Labels, and Gasket" address="192.168.10.2" parttocheck="Bottom Gasket" program="8" autostart="True"/>
+				<step name="message_box_one_button_image" model = "[S]?HO2X|[S]?PM[O]P.*|[S]?PMOP.*" imagepath="\\veris-fs01\Production Line Data\PRAQ\PRAQ Packaging\TopViewOfDUTwProbeFilter.jpg" largetext="Turn DUT with Probe Filter Facing Forward"/>
+				<step name="Vision_Test_New" model="[S]?HO2X" description="Probe Tube Filter w/ PCBA" address="192.168.10.2" parttocheck="Probe Tube Filter w/ PCBA" program="9" autostart="True"/>
+				<step name="Vision_Test_New" model="[S]?PM[O]P.*" description="Inspecting for Probe Tube Filter w/ NO PCBA" address="192.168.10.2" parttocheck="Probe Tube Filter w/ NO PCBA" program="12" autostart="True"/>
+				<step name="eQuality_write_info" eQualityRegister="1000" partnumber="1"/>
+
+				<!--print cal/NIST certificate-->
+				<step name="praq_nist_cert" model="CD2.A.[^A]CX$|H.2.A.[^A]$" description="Printing NIST cert..." async="true" closeword="true" printername="NIST Cert Printer" templatepath="\\veris-fs01\Production Line Data\PRAQ\PRAQ Packaging\Configs\1PT_Certificate.dotx"/>
+				
+				<!--Gasket/Bracket-->
+				<step name="banner_set_light" description="Get paper bag for kits   PKR18309" light="5"/>
+				<step name="eQuality_write_info" eQualityRegister="1005" partnumber="1"/>
+				<step name="banner_set_light" description="Get 2 screws   Z201073" light="6"/>
+				<step name="eQuality_write_info" eQualityRegister="1006" partnumber="1"/>
+				<step name="banner_set_light" description="Get CBL   Z207304" light="7"/>
+				<step name="eQuality_write_info" eQualityRegister="1007" partnumber="1"/>
+				<step name="banner_set_light" description="Get nut M20   Z207303" light="8"/>
+				<step name="eQuality_write_info" eQualityRegister="1008" partnumber="1"/>
+				
+				<!--Accessories-->
+				<step name="banner_set_light" model="^HD|^SHD" description="Get screw bracket   TME09688" light="9"/>
+				<step name="eQuality_write_info" model="^HD|^SHD" eQualityRegister="1009" partnumber="1"/>
+
+				<!--Kit Scale-->
+				<step name="ohaus_wait_zero" description="Waiting for scale to read zero" port="SCALE1_RS232" tolerance="1.0" message="Please zero scale!" imagepath="C:\TesterApps\PickToLight 2\images\Scale Zero.png"/>
+				<step name="ohaus_weigh" model="CD2|HO2|PM[OD]P" description="Place paper bag kit on scale then press weight" port="SCALE1_RS232" expectedweight="25.14" tolerance="1.5" logfilepath="\\veris-fs01\Production Line Data\PRAQ\PRAQ Packaging\PRAQ Packaging Scale Log.txt"/>
+				<step name="ohaus_weigh" model="HD2" description="Place paper bag kit on scale then press weight" port="SCALE1_RS232" expectedweight="45.26" tolerance="1.5" logfilepath="\\veris-fs01\Production Line Data\PRAQ\PRAQ Packaging\PRAQ Packaging Scale Log.txt"/>
+				
+				<!--Carton box-->
+				<step name="banner_set_light" model="^S.D|SPMDP" description="Get carton box   GEX37429-XX" light="101"/>
+				<step name="eQuality_write_info" model="^S.D|SPMDP" eQualityRegister="1540" partnumber="GEX37429-XX"/>
+				<step name="banner_set_light" model="^[CH]D|^PMDP" description="Get carton box   GEX37432-XX" light="102"/>
+				<step name="eQuality_write_info" model="^[CH]D|^PMDP" eQualityRegister="1560" partnumber="GEX37432-XX"/>
+				<step name="banner_set_light" model="^HO|^PMOP" description="Get carton box   GEX37434-XX" light="102"/>
+				<step name="eQuality_write_info" model="^HO|^PMOP" eQualityRegister="1560" partnumber="GEX37434-XX"/>
+				<step name="banner_set_light" model="^S.O|SPMOP" description="Get carton box   GEX37433-XX" light="101"/>
+				<step name="eQuality_write_info" model="^S.O|SPMOP" eQualityRegister="1540" partnumber="GEX37433-XX"/>
+				
+				<step name="banner_set_light" model="^[CH]D|^S[CH]D|^SPMD|PMD" description="Get box insert   GEX40306" light="53"/>
+				<step name="eQuality_write_info" model="^[CH]D|^S[CH]D|^SPMD|PMD" eQualityRegister="1520" partnumber="GEX40306"/>
+				<step name="banner_set_light" model="^HO|^SHO|PMO|SPMO" description="Get box insert   GEX40308" light="53"/>
+				<step name="eQuality_write_info" model="^HO|^SHO|PMO|SPMO" eQualityRegister="1520" partnumber="GEX40308"/>
+				
+				<!--Scan cal/NIST certificate-->
+				<step name="wait_for_async" description="Waiting for NIST cert to finish printing"/>
+				<step name="scan_check_constant" model="CD2.A.[^A]CX$|H.2.A.[^A]$" description="Scan nist certification" expected="GEX92131-01" scannertype="keyence" port="SCAN1_RS232" baud="19200" parity="even" bank="04"/>
+				
+				<!--Installs-->
+				<step name="banner_set_light" model="^CD2.P" description="CD2 Protocol Series Veris   GEX55250-02" light="52"/>
+				<step name="eQuality_write_info" model="^CD2.P" eQualityRegister="1500" partnumber="GEX55250-02"/>
+				<step name="scan_check_constant" model="^CD2.P" description="Install GEX55250-02" expected="GEX55250-02" scannertype="keyence" port="SCAN1_RS232" baud="19200" parity="even" bank="04"/>
+
+				<step name="banner_set_light" model="^CD2.A" description="CD2 Series Veris   GEX55248-01" light="52"/>
+				<step name="eQuality_write_info" model="^CD2.A" eQualityRegister="1500" partnumber="GEX55248-01"/>
+				<step name="scan_check_constant" model="^CD2.A" description="Install GEX55248-01" expected="GEX55248-01" scannertype="keyence" port="SCAN1_RS232" baud="19200" parity="even" bank="04"/>
+
+				<step name="banner_set_light" model="SPMDP" description="GEX55246-02" light="52"/>
+				<step name="eQuality_write_info" model="SPMDP" eQualityRegister="1500" partnumber="GEX55246-02"/>
+				<step name="scan_check_constant" model="SPMDP" description="Install GEX55246-02" expected="GEX55246-02" scannertype="keyence" port="SCAN1_RS232" baud="19200" parity="even" bank="04"/>
+
+				<step name="banner_set_light" model="SPMOP" description="GEX55247-02" light="52"/>
+				<step name="eQuality_write_info" model="SPMOP" eQualityRegister="1500" partnumber="GEX55247-02"/>
+				<step name="scan_check_constant" model="SPMOP" description="Install GEX55247-02" expected="GEX55247-02" scannertype="keyence" port="SCAN1_RS232" baud="19200" parity="even" bank="04"/>
+
+				<step name="banner_set_light" model="^HD2.A" description="GEX55252-02" light="52"/>
+				<step name="eQuality_write_info" model="^HD2.A" eQualityRegister="1500" partnumber="GEX55252-02"/>
+				<step name="scan_check_constant" model="^HD2.A" description="Install GEX55252-02" expected="GEX55252-02" scannertype="keyence" port="SCAN1_RS232" baud="19200" parity="even" bank="04"/>
+
+				<step name="banner_set_light" model="^HD2.P" description="GEX55253-02  HD2 Protocol Series Duct Mount Humidity Sensors" light="52"/>
+				<step name="eQuality_write_info" model="^HD2.P" eQualityRegister="1500" partnumber="GEX55253-02"/>
+				<step name="scan_check_constant" model="^HD2.P" description="Install GEX55253-02" expected="GEX55253-02" scannertype="keyence" port="SCAN1_RS232" baud="19200" parity="even" bank="04"/>
+
+				<step name="banner_set_light" model="^HO" description="GEX55254-02" light="52"/>
+				<step name="eQuality_write_info" model="^HO" eQualityRegister="1500" partnumber="GEX55254-02"/>
+				<step name="scan_check_constant" model="^HO" description="Install GEX55254-02" expected="GEX55254-02" scannertype="keyence" port="SCAN1_RS232" baud="19200" parity="even" bank="04"/>
+
+				<step name="banner_set_light" model="^PMDP" description="GEX55255-02" light="52"/>
+				<step name="eQuality_write_info" model="^PMDP" eQualityRegister="1500" partnumber="GEX55255-02"/>
+				<step name="scan_check_constant" model="^PMDP" description="Install GEX55255-02" expected="GEX55255-02" scannertype="keyence" port="SCAN1_RS232" baud="19200" parity="even" bank="04"/>
+
+				<step name="banner_set_light" model="^PMOP" description="GEX55256-02" light="52"/>
+				<step name="eQuality_write_info" model="^PMOP" eQualityRegister="1500" partnumber="GEX55256-02"/>
+				<step name="scan_check_constant"  model="^PMOP" description="Install GEX55256-02" expected="GEX55256-02" scannertype="keyence" port="SCAN1_RS232" baud="19200" parity="even" bank="04"/>
+
+				<step name="banner_set_light" model="SCD2.A" description="GEX55238-01   SCD2 Series Air Quality Analog Schneider" light="52"/>
+				<step name="eQuality_write_info" model="SCD2.A" eQualityRegister="1500" partnumber="GEX55238-01"/>
+				<step name="scan_check_constant" model="SCD2.A" description="Install GEX55238-01" expected="GEX55238-01" scannertype="keyence" port="SCAN1_RS232" baud="19200" parity="even" bank="04"/>
+
+				<step name="banner_set_light" model="SCD2.P" description="GEX55240-02   SCD2 Series Air Quality BACnet &amp; ModBus Schneider" light="52"/>
+				<step name="eQuality_write_info" model="SCD2.P" eQualityRegister="1500" partnumber="GEX55240-02"/>
+				<step name="scan_check_constant" model="SCD2.P" description="Install GEX55240-02" expected="GEX55240-02" scannertype="keyence" port="SCAN1_RS232" baud="19200" parity="even" bank="04"/>
+
+				<step name="banner_set_light" model="SHD..A" description="GEX55242-02" light="52"/>
+				<step name="eQuality_write_info" model="SHD..A" eQualityRegister="1500" partnumber="GEX55242-02"/>
+				<step name="scan_check_constant" model="SHD..A" description="Install GEX55242-02" expected="GEX55242-02" scannertype="keyence" port="SCAN1_RS232" baud="19200" parity="even" bank="04"/>
+
+				<step name="banner_set_light" model="SHD2.P" description="GEX55243-02   SHD2 Seriers Humidity BACnet &amp; Modbus Schneider" light="52"/>
+				<step name="eQuality_write_info" model="SHD2.P" eQualityRegister="1500" partnumber="GEX55243-02"/>
+				<step name="scan_check_constant" model="SHD2.P" description="Install GEX55243-02" expected="GEX55243-02" scannertype="keyence" port="SCAN1_RS232" baud="19200" parity="even" bank="04"/>
+
+				<step name="banner_set_light" model="SHO" description="GEX55245-02" light="52"/>
+				<step name="eQuality_write_info" model="SHO" eQualityRegister="1500" partnumber="GEX55245-02"/>
+				<step name="scan_check_constant" model="SHO" description="Install GEX55245-02" expected="GEX55245-02" scannertype="keyence" port="SCAN1_RS232" baud="19200" parity="even" bank="04"/>
+
+				<step name="banner_set_light" model="CD2E" description="PKR59964-01  CD2 Series Duct Mount Air Quality Sensor" light="52"/>
+				<step name="eQuality_write_info" model="CD2E" eQualityRegister="1500" partnumber="PKR59964-01"/>
+				<step name="scan_check_constant" model="CD2E" description="Install PKR59964-01" expected="PKR59964-01" scannertype="keyence" port="SCAN1_RS232" baud="19200" parity="even" bank="04"/>
+				
+				<!--Box and prop65 labels-->
+				<step name="print_thermo_label" description="Printing box label..." line="1" labeltype="4" reprintname="Box Label"/>
+				
+				<!--Box Scale-->
+				<step name="ohaus_wait_zero" description="Waiting for scale to read zero" port="SCALE1_RS232" tolerance="1.0" message="Please zero scale!" imagepath="C:\TesterApps\PickToLight 2\images\Scale Zero.png"/>
+				<step name="ohaus_weigh" model="CD2E" description="Place product box on scale then press weigh" port="SCALE1_RS232" expectedweight="493" tolerance="14" logfilepath="\\veris-fs01\Production Line Data\PRAQ\PRAQ Packaging\PRAQ Packaging Scale Log.txt"/>
+				<step name="ohaus_weigh" model="CD2X....[^P]" description="Place product box on scale then press weigh" port="SCALE1_RS232" expectedweight="496" tolerance="14" logfilepath="\\veris-fs01\Production Line Data\PRAQ\PRAQ Packaging\PRAQ Packaging Scale Log.txt"/>
+				<step name="ohaus_weigh" model="CD2L...VX" description="Place product box on scale then press weigh" port="SCALE1_RS232" expectedweight="510" tolerance="14" logfilepath="\\veris-fs01\Production Line Data\PRAQ\PRAQ Packaging\PRAQ Packaging Scale Log.txt"/>
+				<step name="ohaus_weigh" model="CD2X..AVP" description="Place product box on scale then press weigh" port="SCALE1_RS232" expectedweight="545" tolerance="14" logfilepath="\\veris-fs01\Production Line Data\PRAQ\PRAQ Packaging\PRAQ Packaging Scale Log.txt"/>
+				<step name="ohaus_weigh" model="CD2L..AVP" description="Place product box on scale then press weigh" port="SCALE1_RS232" expectedweight="554" tolerance="14" logfilepath="\\veris-fs01\Production Line Data\PRAQ\PRAQ Packaging\PRAQ Packaging Scale Log.txt"/>
+				<step name="ohaus_weigh" model="HD2XP2A" description="Place product box on scale then press weigh" port="SCALE1_RS232" expectedweight="496" tolerance="14" logfilepath="\\veris-fs01\Production Line Data\PRAQ\PRAQ Packaging\PRAQ Packaging Scale Log.txt"/>
+				<step name="ohaus_weigh" model="HD2LP2A" description="Place product box on scale then press weigh" port="SCALE1_RS232" expectedweight="521" tolerance="14" logfilepath="\\veris-fs01\Production Line Data\PRAQ\PRAQ Packaging\PRAQ Packaging Scale Log.txt"/>
+				<step name="ohaus_weigh" model="HD2XA.." description="Place product box on scale then press weigh" port="SCALE1_RS232" expectedweight="475" tolerance="14" logfilepath="\\veris-fs01\Production Line Data\PRAQ\PRAQ Packaging\PRAQ Packaging Scale Log.txt"/>
+				<step name="ohaus_weigh" model="^HO|^SHO" description="Place product box on scale then press weigh" port="SCALE1_RS232" expectedweight="383" tolerance="10" logfilepath="\\veris-fs01\Production Line Data\PRAQ\PRAQ Packaging\PRAQ Packaging Scale Log.txt"/>
+				<step name="ohaus_weigh" model="PMDP" description="Place product box on scale then press weigh" port="SCALE1_RS232" expectedweight="477" tolerance="14" logfilepath="\\veris-fs01\Production Line Data\PRAQ\PRAQ Packaging\PRAQ Packaging Scale Log.txt"/>
+				<step name="ohaus_weigh" model="PMOP" description="Place product box on scale then press weigh" port="SCALE1_RS232" expectedweight="405" tolerance="10" logfilepath="\\veris-fs01\Production Line Data\PRAQ\PRAQ Packaging\PRAQ Packaging Scale Log.txt"/>
+				
+				<!--Scan Box and Prop-->
+				<step name="ean_code_lookup" description="Getting product EAN code from spreadsheet" filepath="\\veris-fs01\Production Line Data\PRAQ\PRAQ Packaging\Configs\PRAQ EAN Codes.csv"/>
+				<step name="scan_check_variable" description="Place box with box label under scanner" variable="eancode" scannertype="keyence" port="SCAN1_RS232" baud="19200" parity="even" bank="02"/>
+				<step name="scan_check_constant" description="Place box with Prop65 label under scanner" expected="PHA98067-00" scannertype="keyence" port="SCAN1_RS232" baud="19200" parity="even" bank="03"/>
+				
+				<!--End sequence-->
+				<step name="eQuality_finish" description="sequence finished"/>
+				<step name="backflush" description="Backflushing..." logfilepath="\\veris-fs01\Production Line Data\PRAQ\PRAQ Packaging\PRAQ Packaging Backflush Log.txt"/>
+				<step name="lds_eperform_send_part" description="Sending part to LDS" logfilepath="\\veris-fs01\Production Line Data\PRAQ\PRAQ Packaging\PRAQ Packaging LDS Log.txt"/>
+				<step name="odin_stage_check_out" description="Marking stage as complete" thisstage="Packaging" nextstage="Finished Good"/>
+				<step name="delay" description="Done!" delay="1500"/>
+				
+				<step name="banner_set_all_lights" state="off" numlights="50"/>
+			</section>
+		</sequence>
+	</scan>
+
+
+<!-- *********************************************************************** -->
+<!--                             CUSTOM BUTTONS PRESSED:                     -->
+<!-- *********************************************************************** -->
+<!--BUTTON 1 PRESSED. These steps will execute when button1 is pressed (in parallel to main process)-->
+	<button1>
+		<step name="scan_set_variable" description="Scan the part number" expected="^S[CD]|^[CD]" variable="badpartnumber" incorrectmessage="This is not a valid part number"/>
+		<step name="lds_eperform_send_part" description="Sending bad part to LDS..." partnumbervar="badpartnumber" bad="true" logfilepath="\\veris-fs01\Production Line Data\PRAQ\PRAQ Packaging\PRAQ Packaging LDS Log.txt"/>
+		<step name="message_box_one_button" largetext="Bad part sent"/>
+	</button1>
+
+<!--BUTTON 2 PRESSED:-->
+	<button2>
+		<step name="release" logfilepath="\\veris-fs01\Production Line Data\PRAQ\PRAQ Packaging\PRAQ Packaging Release Log.txt"/>
+	</button2>
+
+<!--BUTTON 3 PRESSED:-->
+	<button3>
+		<step name="nop"/>
+	</button3>
+
+<!--BUTTON 4 PRESSED:-->
+	<button4>
+		<step name="nop"/>
+	</button4>
+
+<!--BUTTON 5 PRESSED:-->
+	<button5>
+		<step name="nop"/>
+	</button5>
+
+<!--BUTTON 6 PRESSED:-->
+	<button6>
+		<step name="nop"/>
+	</button6>
+
+<!--BUTTON 7 PRESSED:-->
+	<button7>
+		<step name="reprint_thermo_label"/>
+	</button7>
+	
+<!-- *********************************************************************** -->
+<!--                        MAINTENANCE BUTTONS PRESSED:                     -->
+<!-- *********************************************************************** -->
+<!--MAINTENANCE BUTTON 1 PRESSED:-->
+	<maintenance1>
+	    <step name="banner_init" ip="192.168.0.1" port="502"/>
+	    <step name="banner_identify_lights"/>
+		<step name="banner_close"/>
+	</maintenance1>
+	
+<!--MAINTENANCE BUTTON 2 PRESSED:-->
+	<maintenance2>
+	    <step name="ohaus_weigh" description="Place box on scale then press weigh" port="COM3" expectedweight="398.7" tolerance="1.0" logfilepath="\\veris-fs01\Production Line Data\PRAQ\PRAQ Packaging\PRAQ Packaging Scale Log.txt"/>
+	</maintenance2>
+	
+<!--MAINTENANCE BUTTON 3 PRESSED:-->
+	<maintenance3>
+	    <step name="scan_set_variable" description="Enter product serial number" variable="serialnumber"/>
+		<step name="praq_nist_cert" description="Printing NIST cert..." printername="NIST Cert Printer" templatepath="\\veris-fs01\Production Line Data\PRAQ\PRAQ Packaging\Configs\1PT_Certificate.dotx"/>
+	</maintenance3>
+	
+<!--MAINTENANCE BUTTON 4 PRESSED:-->
+	<maintenance4>
+		<step name="scan_set_variable" description="Scan serial number" regex=".{8}$" variable="serialnumber"/>
+		<step name="odin_get_pn_from_sn" description="Getting part number from Odin database..."/>
+	    <step name="lsa_pra_get_firmware" description="Getting product firmware version from database..."/>
+		<step name="setvar" variable="datecode" value="2451"/>
+		<step name="print_thermo_label" description="Printing product label..." line="1" labeltype="1"/>
+	</maintenance4>
+
+</xml>

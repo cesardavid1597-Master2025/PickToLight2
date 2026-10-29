@@ -1,0 +1,6 @@
+
+*.log
+*.aliases
+/XML
+PickToLight 2.aliases
+/data

@@ -1,2 +1,1 @@
-# PickToLight2
-Portland Project
+# PickToLight-2
